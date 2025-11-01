@@ -26,7 +26,7 @@ RenderSettings:
   m_AmbientIntensity: 1
   m_AmbientMode: 0
   m_SubtractiveShadowColor: {r: 0.42, g: 0.478, b: 0.627, a: 1}
-  m_SkyboxMaterial: {fileID: 0}
+  m_SkyboxMaterial: {fileID: 10304, guid: 0000000000000000f000000000000000, type: 0}
   m_HaloStrength: 0.5
   m_FlareStrength: 1
   m_FlareFadeSpeed: 3
@@ -151,10 +151,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8cb2f5d3c2900c245a69f327b7337efc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  werewolfUI: {fileID: 467066078}
-  humanUI: {fileID: 1795892898}
-  werewolfTimer: {fileID: 467066075}
+  humanUI: {fileID: 1795892894}
+  werewolfUI: {fileID: 467066074}
   humanTimer: {fileID: 1795892895}
+  werewolfTimer: {fileID: 467066075}
 --- !u!4 &229463578
 Transform:
   m_ObjectHideFlags: 0
@@ -206,7 +206,7 @@ MonoBehaviour:
   startingTime: 30
   messageAnim: {fileID: 1982207973}
   messageAnimName: backtohuman
-  messageAnimDuration: 1.5
+  messageAnimDuration: 5
 --- !u!114 &467066076
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -471,7 +471,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1473040794
 RectTransform:
   m_ObjectHideFlags: 0
@@ -739,7 +739,7 @@ MonoBehaviour:
   startingTime: 60
   messageAnim: {fileID: 1473040795}
   messageAnimName: backtowolf
-  messageAnimDuration: 1.5
+  messageAnimDuration: 5
 --- !u!114 &1795892896
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -842,7 +842,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1982207972
 RectTransform:
   m_ObjectHideFlags: 0
