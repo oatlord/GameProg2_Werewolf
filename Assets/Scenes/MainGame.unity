@@ -76238,6 +76238,34 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1869693919}
   m_Mesh: {fileID: 10202, guid: 0000000000000000e000000000000000, type: 0}
+--- !u!1 &1878967057 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 6210321764500846397, guid: f0366453d1e998b41948336209c70c4f, type: 3}
+  m_PrefabInstance: {fileID: 4358538742964064852}
+  m_PrefabAsset: {fileID: 0}
+--- !u!136 &1878967060 stripped
+CapsuleCollider:
+  m_CorrespondingSourceObject: {fileID: 749204241615118223, guid: f0366453d1e998b41948336209c70c4f, type: 3}
+  m_PrefabInstance: {fileID: 4358538742964064852}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1878967064
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1878967057}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b49f524bad5f52488f00e7ed8e5495c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  humanTag: Human
+  werewolfTag: Werewolf
+  transitionTag: Transition
+  humanTimer: {fileID: 2053671217}
+  werewolfTimer: {fileID: 467066075}
+  playerCollider: {fileID: 1878967060}
 --- !u!1 &1879668225
 GameObject:
   m_ObjectHideFlags: 0
@@ -83157,7 +83185,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 519688aa1d3b9064c9ed2416d5c56e5a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  timerText: {fileID: 1385412409}
+  timerText: {fileID: 348835229}
   startingTime: 60
   messageAnim: {fileID: 1385412406}
   messageAnimName: backtowolf
@@ -87301,6 +87329,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 6210321764500846397, guid: f0366453d1e998b41948336209c70c4f, type: 3}
+      propertyPath: m_TagString
+      value: Human
+      objectReference: {fileID: 0}
     - target: {fileID: 6974317034740079131, guid: f0366453d1e998b41948336209c70c4f, type: 3}
       propertyPath: m_LocalPosition.x
       value: 204.89
@@ -87352,7 +87384,10 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 6210321764500846397, guid: f0366453d1e998b41948336209c70c4f, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1878967064}
   m_SourcePrefab: {fileID: 100100000, guid: f0366453d1e998b41948336209c70c4f, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
