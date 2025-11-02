@@ -41,6 +41,7 @@ public class HumanAI : MonoBehaviour
             ReactToWerewolf();
         else if (playerTag == "Transition")
             GameManager.Instance.GameOver();
+            Debug.Log("[ALERT] Human spotted the player in Transition form! Game Over triggered.");
     }
 
     if (!agent.pathPending && agent.remainingDistance < 0.2f && !isPanicking)
