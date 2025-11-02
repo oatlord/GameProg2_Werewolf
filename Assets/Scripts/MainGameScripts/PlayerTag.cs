@@ -15,6 +15,11 @@ public class PlayerTransformController : MonoBehaviour
     [Header("Components")]
     [SerializeField] private Collider playerCollider;
 
+    [Header("Camera Animation")]
+    [SerializeField] private Animator cameraAnimator; // 🎥 Camera Animator
+    [SerializeField] private string raiseUpTrigger = "RaiseUp";       // trigger name in Animator
+    [SerializeField] private string backNormalTrigger = "BackNormal"; // trigger name in Animator
+
     private string currentForm = "Human";
     private bool isTransitioning = false;
 
@@ -26,22 +31,37 @@ public class PlayerTransformController : MonoBehaviour
         LogTagState();
 
         // Subscribe to timer events
-        humanTimer.OnMessageTime += StartTransition;
-        werewolfTimer.OnMessageTime += StartTransition;
+        humanTimer.OnMessageTime += () => StartTransition(humanTimer);
+werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
+
 
         humanTimer.OnTimerEnd += () => EndTransition(werewolfTag);
         werewolfTimer.OnTimerEnd += () => EndTransition(humanTag);
     }
 
-    private void StartTransition()
-    {
-        if (isTransitioning) return;
-        isTransitioning = true;
+    private void StartTransition(Timer sourceTimer)
+{
+    if (isTransitioning) return;
+    isTransitioning = true;
 
-        gameObject.tag = transitionTag;
-        currentForm = "Transforming";
-        LogTagState();
+    gameObject.tag = transitionTag;
+    currentForm = "Transforming";
+    LogTagState();
+
+    if (sourceTimer == humanTimer)
+    {
+        // Human → Werewolf
+        cameraAnimator.SetTrigger(raiseUpTrigger);
+        Debug.Log("[TRANSFORM] Human to Werewolf transition started.");
     }
+    else if (sourceTimer == werewolfTimer)
+    {
+        // Werewolf → Human
+        cameraAnimator.SetTrigger(backNormalTrigger);
+        Debug.Log("[TRANSFORM] Werewolf to Human transition started.");
+    }
+}
+
 
     private void EndTransition(string newTag)
     {

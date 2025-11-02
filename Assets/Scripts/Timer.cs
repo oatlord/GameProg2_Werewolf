@@ -21,6 +21,9 @@ public class Timer : MonoBehaviour
     public System.Action OnTimerEnd;
     public System.Action OnMessageTime;
 
+    public bool IsRunning { get; private set; }
+
+
     void Start()
     {
         // make sure message starts disabled
