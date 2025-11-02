@@ -104,12 +104,29 @@ public class HumanAI : MonoBehaviour
         Wander();
     }
 
-    void Wander()
-    {
-        if (isPanicking) return;
+void Wander()
+{
+    if (isPanicking) return;
 
-        agent.speed = walkSpeed;
-        Vector3 randomPos = startPos + new Vector3(Random.Range(35, 5), 0, Random.Range(35, 5));
-        agent.SetDestination(randomPos);
+    agent.speed = walkSpeed;
+
+    // Half the floor width and length
+    float rangeX = 8.5f;
+    float rangeZ = 13f;
+
+    // Pick a random point near the start position
+    Vector3 randomPos = startPos + new Vector3(
+        Random.Range(-rangeX, rangeX),
+        0,
+        Random.Range(-rangeZ, rangeZ)
+    );
+
+    // Snap the random point to the nearest valid NavMesh spot
+    NavMeshHit hit;
+    if (NavMesh.SamplePosition(randomPos, out hit, 2f, NavMesh.AllAreas))
+    {
+        agent.SetDestination(hit.position);
     }
+}
+
 }
