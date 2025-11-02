@@ -21,6 +21,7 @@ public class GameManager : MonoBehaviour
         if (GameObject.FindGameObjectsWithTag("HumanNPC").Length == 0)
         {
             Debug.Log("All humans eaten! You win!");
+            SceneManager.LoadScene("GameWin");
             // Trigger win screen or load next level
         }
     }
