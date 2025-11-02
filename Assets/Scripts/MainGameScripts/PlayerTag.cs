@@ -81,8 +81,15 @@ werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
         if (currentForm == "Werewolf" && other.CompareTag("HumanNPC"))
         {
             Debug.Log("[ACTION] Devoured a human!");
-            Destroy(other.gameObject);
-            GameManager.Instance.CheckWinCondition();
+            other.gameObject.SetActive(false);
+            StartCoroutine(DelayedCheck());
         }
     }
+
+    private IEnumerator DelayedCheck()
+    {
+        yield return null; // wait one frame
+        GameManager.Instance.CheckWinCondition();
+    }
+
 }

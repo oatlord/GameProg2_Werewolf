@@ -13,7 +13,7 @@ public class GameManager : MonoBehaviour
     public void GameOver()
     {
         Debug.Log("GAME OVER! You were caught transforming!");
-        SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+        SceneManager.LoadScene("Gameover");
     }
 
     public void CheckWinCondition()

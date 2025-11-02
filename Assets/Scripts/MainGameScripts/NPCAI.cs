@@ -16,14 +16,14 @@ public class HumanAI : MonoBehaviour
 
     private NavMeshAgent agent;
     private Vector3 startPos;
-    private GameObject player;
+    [SerializeField] private GameObject player;
+
     private bool isPanicking = false;
     private Coroutine calmRoutine;
 
     void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        player = GameObject.FindGameObjectWithTag("Human");
         startPos = transform.position;
         Wander();
     }
@@ -35,40 +35,39 @@ public class HumanAI : MonoBehaviour
     Vector3 dirToPlayer = player.transform.position - eyes.position;
     Debug.DrawRay(eyes.position, dirToPlayer.normalized * sightRange, Color.red);
 
-        if (CanSeePlayer(out string playerTag))
-        {
-            if (playerTag == "Werewolf")
-                ReactToWerewolf();
-            else if (playerTag == "Transition")
-                GameManager.Instance.GameOver();
-        }
+    if (CanSeePlayer(out string playerTag))
+    {
+        if (playerTag == "Werewolf")
+            ReactToWerewolf();
+        else if (playerTag == "Transition")
+            GameManager.Instance.GameOver();
+    }
 
-        if (!agent.pathPending && agent.remainingDistance < 0.2f && !isPanicking)
-        {
-            Wander();
-        }
-
-
+    if (!agent.pathPending && agent.remainingDistance < 0.2f && !isPanicking)
+    {
+        Wander();
+    }
 }
 
-// void OnDrawGizmosSelected()
-// {
-//     if (eyes == null) return;
-//     Gizmos.color = Color.yellow;
-//     Gizmos.DrawWireSphere(eyes.position, sightRange);
 
-//     Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2f, 0) * eyes.forward;
-//     Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2f, 0) * eyes.forward;
+void OnDrawGizmosSelected()
+{
+    if (eyes == null) return;
+    Gizmos.color = Color.yellow;
+    Gizmos.DrawWireSphere(eyes.position, sightRange);
 
-//     Gizmos.color = Color.cyan;
-//     Gizmos.DrawRay(eyes.position, leftLimit * sightRange);
-//     Gizmos.DrawRay(eyes.position, rightLimit * sightRange);
-// }
+    Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2f, 0) * eyes.forward;
+    Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2f, 0) * eyes.forward;
+
+    Gizmos.color = Color.cyan;
+    Gizmos.DrawRay(eyes.position, leftLimit * sightRange);
+    Gizmos.DrawRay(eyes.position, rightLimit * sightRange);
+}
 
 
     bool CanSeePlayer(out string tag)
     {
-        tag = player.tag;
+        tag = null;
 
         Vector3 dirToPlayer = player.transform.position - eyes.position;
         float angle = Vector3.Angle(eyes.forward, dirToPlayer);
@@ -77,7 +76,8 @@ public class HumanAI : MonoBehaviour
         {
             if (Physics.Raycast(eyes.position, dirToPlayer.normalized, out RaycastHit hit, sightRange))
             {
-                if (hit.collider.gameObject == player)
+                tag = hit.collider.tag;
+                if (hit.collider.CompareTag("Human") || hit.collider.CompareTag("Werewolf") || hit.collider.CompareTag("Transition"))
                     return true;
             }
         }
