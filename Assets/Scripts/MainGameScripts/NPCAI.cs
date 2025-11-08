@@ -14,12 +14,17 @@ public class HumanAI : MonoBehaviour
     [SerializeField] private float runSpeed = 4f;
     [SerializeField] private float calmDelay = 3f;
 
+    [Header("Player Reference")]
+    [SerializeField] private GameObject player;
+    [SerializeField] private Animator animator;
+
     private NavMeshAgent agent;
     private Vector3 startPos;
-    [SerializeField] private GameObject player;
 
     private bool isPanicking = false;
     private Coroutine calmRoutine;
+
+    private bool IsGameOver => GameManager.Instance.isGameOver;
 
     void Start()
     {
@@ -29,41 +34,46 @@ public class HumanAI : MonoBehaviour
     }
 
     void Update()
-{
-    if (player == null) return;
-
-    Vector3 dirToPlayer = player.transform.position - eyes.position;
-    Debug.DrawRay(eyes.position, dirToPlayer.normalized * sightRange, Color.red);
-
-    if (CanSeePlayer(out string playerTag))
     {
-        if (playerTag == "Werewolf")
-            ReactToWerewolf();
-        else if (playerTag == "Transition")
-            GameManager.Instance.GameOver();
-            Debug.Log("[ALERT] Human spotted the player in Transition form! Game Over triggered.");
+        if (player == null) return;
+
+        Vector3 dirToPlayer = player.transform.position - eyes.position;
+        Debug.DrawRay(eyes.position, dirToPlayer.normalized * sightRange, Color.red);
+
+        if (CanSeePlayer(out string playerTag))
+        {
+            if (playerTag == "Werewolf")
+            {
+                ReactToWerewolf();
+            }
+            else if (playerTag == "Transition")
+            {
+                StopAllActions();
+                GameManager.Instance.GameOver();
+                Debug.Log("[ALERT] Human spotted the player in Transition form! Game Over triggered.");
+            }
+        }
+
+        if (!agent.pathPending && agent.remainingDistance < 0.2f && !isPanicking)
+        {
+            Wander();
+        }
     }
 
-    if (!agent.pathPending && agent.remainingDistance < 0.2f && !isPanicking)
+
+    void OnDrawGizmosSelected()
     {
-        Wander();
+        if (eyes == null) return;
+        Gizmos.color = Color.yellow;
+        Gizmos.DrawWireSphere(eyes.position, sightRange);
+
+        Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2f, 0) * eyes.forward;
+        Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2f, 0) * eyes.forward;
+
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawRay(eyes.position, leftLimit * sightRange);
+        Gizmos.DrawRay(eyes.position, rightLimit * sightRange);
     }
-}
-
-
-void OnDrawGizmosSelected()
-{
-    if (eyes == null) return;
-    Gizmos.color = Color.yellow;
-    Gizmos.DrawWireSphere(eyes.position, sightRange);
-
-    Vector3 leftLimit = Quaternion.Euler(0, -fieldOfView / 2f, 0) * eyes.forward;
-    Vector3 rightLimit = Quaternion.Euler(0, fieldOfView / 2f, 0) * eyes.forward;
-
-    Gizmos.color = Color.cyan;
-    Gizmos.DrawRay(eyes.position, leftLimit * sightRange);
-    Gizmos.DrawRay(eyes.position, rightLimit * sightRange);
-}
 
 
     bool CanSeePlayer(out string tag)
@@ -87,7 +97,7 @@ void OnDrawGizmosSelected()
 
     void ReactToWerewolf()
     {
-        if (isPanicking) return;
+        if (isPanicking || IsGameOver) return;
         isPanicking = true;
         agent.speed = runSpeed;
         Vector3 fleeDir = (transform.position - player.transform.position).normalized;
@@ -105,29 +115,44 @@ void OnDrawGizmosSelected()
         Wander();
     }
 
-void Wander()
-{
-    if (isPanicking) return;
-
-    agent.speed = walkSpeed;
-
-    // Half the floor width and length
-    float rangeX = 8.5f;
-    float rangeZ = 13f;
-
-    // Pick a random point near the start position
-    Vector3 randomPos = startPos + new Vector3(
-        Random.Range(-rangeX, rangeX),
-        0,
-        Random.Range(-rangeZ, rangeZ)
-    );
-
-    // Snap the random point to the nearest valid NavMesh spot
-    NavMeshHit hit;
-    if (NavMesh.SamplePosition(randomPos, out hit, 2f, NavMesh.AllAreas))
+    void Wander()
     {
-        agent.SetDestination(hit.position);
-    }
-}
+        if (isPanicking || IsGameOver) return;
 
+        agent.speed = walkSpeed;
+
+        // Half the floor width and length
+        float rangeX = 8.5f;
+        float rangeZ = 13f;
+
+        // Pick a random point near the start position
+        Vector3 randomPos = startPos + new Vector3(
+            Random.Range(-rangeX, rangeX),
+            0,
+            Random.Range(-rangeZ, rangeZ)
+        );
+
+        // Snap the random point to the nearest valid NavMesh spot
+        NavMeshHit hit;
+        if (NavMesh.SamplePosition(randomPos, out hit, 2f, NavMesh.AllAreas))
+        {
+            agent.SetDestination(hit.position);
+        }
+    }
+
+    void StopAllActions()
+    {
+        if (calmRoutine != null)
+        {
+            StopCoroutine(calmRoutine);
+        }
+        else
+        {
+            calmRoutine = null;
+        }
+        Debug.Log("[GAME OVER] Human NPC stopping all actions.");
+        isPanicking = false;
+        agent.isStopped = true;
+        agent.ResetPath();
+    }
 }
