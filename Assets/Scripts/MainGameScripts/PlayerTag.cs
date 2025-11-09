@@ -32,36 +32,34 @@ public class PlayerTransformController : MonoBehaviour
 
         // Subscribe to timer events
         humanTimer.OnMessageTime += () => StartTransition(humanTimer);
-werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
-
+        werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
 
         humanTimer.OnTimerEnd += () => EndTransition(werewolfTag);
         werewolfTimer.OnTimerEnd += () => EndTransition(humanTag);
     }
 
     private void StartTransition(Timer sourceTimer)
-{
-    if (isTransitioning) return;
-    isTransitioning = true;
-
-    gameObject.tag = transitionTag;
-    currentForm = "Transforming";
-    LogTagState();
-
-    if (sourceTimer == humanTimer)
     {
-        // Human → Werewolf
-        cameraAnimator.SetTrigger(raiseUpTrigger);
-        Debug.Log("[TRANSFORM] Human to Werewolf transition started.");
-    }
-    else if (sourceTimer == werewolfTimer)
-    {
-        // Werewolf → Human
-        cameraAnimator.SetTrigger(backNormalTrigger);
-        Debug.Log("[TRANSFORM] Werewolf to Human transition started.");
-    }
-}
+        if (isTransitioning) return;
+        isTransitioning = true;
 
+        gameObject.tag = transitionTag;
+        currentForm = "Transforming";
+        LogTagState();
+
+        if (sourceTimer == humanTimer)
+        {
+            // Human → Werewolf
+            cameraAnimator.SetTrigger(raiseUpTrigger);
+            Debug.Log("[TRANSFORM] Human to Werewolf transition started.");
+        }
+        else if (sourceTimer == werewolfTimer)
+        {
+            // Werewolf → Human
+            cameraAnimator.SetTrigger(backNormalTrigger);
+            Debug.Log("[TRANSFORM] Werewolf to Human transition started.");
+        }
+    }
 
     private void EndTransition(string newTag)
     {
@@ -76,12 +74,22 @@ werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
         Debug.Log($"[TRANSFORM STATE] → Current Tag: {gameObject.tag} | Current Form: {currentForm}");
     }
 
+    // 👇 This is where the werewolf eats a human
     private void OnTriggerEnter(Collider other)
     {
         if (currentForm == "Werewolf" && other.CompareTag("HumanNPC"))
         {
             Debug.Log("[ACTION] Devoured a human!");
+
+            // Disable or destroy NPC
             other.gameObject.SetActive(false);
+
+            // 🧮 Tell the counter that an NPC was eaten
+            if (NPCCounter.instance != null)
+            {
+                NPCCounter.instance.NPCeaten();
+            }
+
             StartCoroutine(DelayedCheck());
         }
     }
@@ -91,5 +99,4 @@ werewolfTimer.OnMessageTime += () => StartTransition(werewolfTimer);
         yield return null; // wait one frame
         GameManager.Instance.CheckWinCondition();
     }
-
 }
