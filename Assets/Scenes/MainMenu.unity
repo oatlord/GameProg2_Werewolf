@@ -877,7 +877,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ReturnObject: {fileID: 1769657673}
-  ThisScene: MainGame
+  ThisScene: Tutorial
 --- !u!4 &1430523583
 Transform:
   m_ObjectHideFlags: 0
